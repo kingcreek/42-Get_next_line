@@ -28,7 +28,7 @@ char	*ft_new_stash(char *stash)
 	}
 	str = malloc(sizeof(char) * (ft_strlen(stash) - i + 1));
 	if (!str)
-		return (NULL);
+		return (free(stash), NULL);
 	i++;
 	y = 0;
 	while (stash[i])
@@ -48,7 +48,10 @@ char	*ft_get_line(char *stash)
 		return (NULL);
 	while (stash[index] && stash[index] != '\n')
 		index++;
-	str = malloc(sizeof(char) * (index + 2));
+	if (stash[index] == '\n')
+		str = malloc(sizeof(char) * (index + 2));
+	else
+		str = malloc(sizeof(char) * (index + 1));
 	if (!str)
 		return (NULL);
 	index = 0;
@@ -58,10 +61,7 @@ char	*ft_get_line(char *stash)
 		index++;
 	}
 	if (stash[index] == '\n')
-	{
-		str[index] = '\n';
-		index++;
-	}
+		str[index++] = '\n';
 	str[index] = '\0';
 	return (str);
 }
@@ -74,7 +74,7 @@ char	*ft_read_to_stash(int fd, char *stash)
 	rdd_bytes = 1;
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
-		return (NULL);
+		return (free(stash), NULL);
 	while (!ft_strchr(stash, '\n') && rdd_bytes > 0)
 	{
 		rdd_bytes = read(fd, buffer, BUFFER_SIZE);
@@ -102,6 +102,12 @@ char	*get_next_line(int fd)
 	if (!stash)
 		return (NULL);
 	line = ft_get_line(stash);
+	if (!line)
+	{
+		free(stash);
+		stash = NULL;
+		return (NULL);
+	}
 	stash = ft_new_stash(stash);
 	return (line);
 }

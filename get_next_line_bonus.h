@@ -21,6 +21,10 @@
 #  define BUFFER_SIZE 5
 # endif
 
+# ifndef OPEN_MAX
+#  define OPEN_MAX 1024
+# endif
+
 char	*get_next_line(int fd);
 char	*ft_read_to_stash(int fd, char *stash);
 char	*ft_get_line(char *stash);
